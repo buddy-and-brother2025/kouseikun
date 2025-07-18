@@ -4,125 +4,50 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Proof-Easy｜簡易校正ツール</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 2rem;
-      background-color: #f7f9fa;
-    }
-    h1 {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-    }
-    .section {
-      background: #fff;
-      padding: 1rem;
-      margin-bottom: 1.5rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-    label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: bold;
-    }
-    input[type="file"], textarea {
-      width: 100%;
-      margin-bottom: 1rem;
-      font-family: monospace;
-    }
-    button {
-      padding: 0.6rem 1.2rem;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #0056b3;
-    }
-    .result {
-      background: #f0f0f0;
-      padding: 1rem;
-      white-space: pre-wrap;
-      border-radius: 6px;
-    }
-    .error {
-      color: red;
-      font-weight: bold;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
+  <!-- ライブラリ読み込み -->
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/build/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/build/pdf.worker.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.1/dist/tesseract.min.js"></script>
 </head>
 <body>
-  <h1>🛠 Proof-Easy｜簡易校正ツール（価格・差分チェック）</h1>
+  <h1>🛠 Proof-Easy｜簡易校正ツール</h1>
 
   <div class="section">
-    <label>チェックモード選択：</label>
+    <label>モード選択：</label>
     <label><input type="checkbox" id="modeA" checked /> A：売価・数量チェック</label>
     <label><input type="checkbox" id="modeB" checked /> B：テキスト差分チェック</label>
   </div>
 
   <div class="section">
-    <label>原稿データ（テキスト貼り付け）</label>
-    <textarea id="sourceText" rows="6" placeholder="ここに原稿テキストを貼ってください"></textarea>
+    <label>原稿データを選択：</label>
+    <input type="file" id="sourceFile" accept=".pdf,.xlsx" />
+    <label><input type="radio" name="sourceMode" value="pdf" checked /> PDF</label>
+    <label><input type="radio" name="sourceMode" value="excel" /> Excel</label>
+    <label><input type="checkbox" id="useOCR" /> OCRを使う（PDFが画像の場合）</label>
   </div>
 
   <div class="section">
-    <label>完成デザインデータ（テキスト貼り付け）</label>
-    <textarea id="designText" rows="6" placeholder="ここにデザインテキストを貼ってください"></textarea>
+    <label>完成デザイン（PDF）を選択：</label>
+    <input type="file" id="designPDF" accept=".pdf" />
+  </div>
+
+  <div class="section">
+    <label>原稿テキスト</label>
+    <textarea id="sourceText" rows="8" placeholder="原稿のテキストがここに表示されます"></textarea>
+  </div>
+
+  <div class="section">
+    <label>完成デザインテキスト</label>
+    <textarea id="designText" rows="8" placeholder="完成デザインのテキストがここに表示されます"></textarea>
   </div>
 
   <button onclick="runCheck()">チェックする</button>
+  <div id="result" class="result"></div>
 
-  <div id="result" class="result" style="margin-top: 1.5rem;"></div>
+  <canvas id="hiddenCanvas" style="display:none;"></canvas>
 
-  <script>
-    function runCheck() {
-      const modeA = document.getElementById("modeA").checked;
-      const modeB = document.getElementById("modeB").checked;
-      const sourceText = document.getElementById("sourceText").value;
-      const designText = document.getElementById("designText").value;
-      const resultDiv = document.getElementById("result");
-      let result = "";
-
-      // Aモード：価格チェック
-      if (modeA) {
-        const priceRegex = /([1-9]\\d{2,4})円（税抜価格([1-9]\\d{2,4})円）/g;
-        const matches = [...designText.matchAll(priceRegex)];
-
-        result += "🧾【価格チェック】\\n";
-        if (matches.length === 0) {
-          result += "⚠ 価格の形式（〇〇円（税抜価格△△円））が見つかりません\\n";
-        } else {
-          for (const [_, taxInStr, taxExStr] of matches) {
-            const taxIn = parseInt(taxInStr);
-            const taxEx = parseInt(taxExStr);
-            const calcIn = Math.round(taxEx * 1.08);
-            if (calcIn !== taxIn) {
-              result += `❌ ${taxEx}円 → 税込は ${calcIn}円のはず → 実際は ${taxIn}円\\n`;
-            } else {
-              result += `✅ ${taxEx}円 → ${taxIn}円（OK）\\n`;
-            }
-          }
-        }
-        result += "\\n";
-      }
-
-      // Bモード：テキスト差分
-      if (modeB) {
-        const srcLines = sourceText.split(/\\r?\\n/);
-        const desLines = designText.split(/\\r?\\n/);
-        result += "📄【差分チェック】\\n";
-        srcLines.forEach((line, i) => {
-          if (line !== desLines[i]) {
-            result += `⚠ ${i + 1}行目：原稿「${line}」 ≠ デザイン「${desLines[i] || "（なし）"}」\\n`;
-          }
-        });
-      }
-
-      resultDiv.innerText = result || "✅ チェック完了：問題は見つかりませんでした。";
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
