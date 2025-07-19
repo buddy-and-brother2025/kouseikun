@@ -3,7 +3,7 @@ window.onload = function () {
   console.log("✅ window.onload 発動 → JS動いてるよ！");
 };
 function checkPrices(text) {
-  const pricePattern =  /(\d{2,5})円\s*[（(]?(税込|税抜)?(?:価格)?[:：]?\s*(\d{2,5})円[）)]?/g;
+  const pricePattern = /(\d{2,5})円\s*[（(]?\s*(税込|税抜)?(?:価格)?[:：]?\s*(\d{2,5})円\s*[）)]?/g;
   const results = [];
 
   const matches = [...text.matchAll(pricePattern)];
