@@ -54,12 +54,22 @@ function runCheck() {
   }
 
   if (modeB) {
-    const srcLines = sourceText.split(/\r?\n/).map(line => line.trim()).filter(line => line);
+    const srcLines = sourceText
+      .split(/\r?\n/)
+      .map(line => line.trim())
+      .filter(line => line && !/^,+$/.test(line)); // 空行や「,,,」だけの行を除外
+
     const desText = designText.replace(/\s+/g, " ");
     result += "📄【差分チェック】\n";
-    srcLines.forEach((line, i) => {
-      if (!desText.includes(line)) {
-        result += `⚠ 原稿の文「${line}」がデザインに見つかりません\n`;
+
+    srcLines.forEach((line) => {
+      const words = line.split(/[\s,、。！!（）()・「」『』]/).filter(w => w);
+      const missingWords = words.filter(word => !desText.includes(word));
+
+      if (missingWords.length > 0) {
+        result += `⚠ 原稿の文「${line}」の一部が見つかりません → 見つからなかった語句: ${missingWords.join(", ")}\n`;
+      } else {
+        result += `✅ 原稿の文「${line}」は全語句が含まれています\n`;
       }
     });
   }
