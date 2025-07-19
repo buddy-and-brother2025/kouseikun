@@ -12,19 +12,18 @@ function runCheck() {
   if (modeA) {
     result += "🧾【価格チェック】\n";
 
-    const lines = designText.split(/\r?\n/);
-    let matchCount = 0;
+    // 全文からマッチ（行単位ではなく）
+    const text = designText.replace(/\s+/g, " ");
+    const pattern = /([\d,]{2,5})円\s*[（(]?(税込価格|税抜価格|本体価格)?[：:\s]?([\d,]{2,5})円[）)]?/g;
+    const matches = [...text.matchAll(pattern)];
 
-    for (const line of lines) {
-      // 各種パターン対応（柔軟に）
-      const pattern = /([\d,]{2,5})円\s*[（(]?(税込価格|税抜価格|本体価格)?[：:\s]?([\d,]{2,5})円[）)]?/g;
-      const matches = [...line.matchAll(pattern)];
-
+    if (matches.length === 0) {
+      result += "⚠ 価格形式が見つかりません\n";
+    } else {
       for (const match of matches) {
         const val1 = parseInt(match[1].replace(/,/g, ""));
         const label = match[2];
         const val2 = parseInt(match[3].replace(/,/g, ""));
-        matchCount++;
 
         if (!label) {
           const big = Math.max(val1, val2);
@@ -52,14 +51,10 @@ function runCheck() {
       }
     }
 
-    if (matchCount === 0) {
-      result += "⚠ 価格形式が見つかりません\n";
-    }
-
     // 単位表記チェック
     result += "\n📦【数量・単位チェック】\n";
     const unitRegex = /\d+(個|コ|ヶ|ケ|個入|枚|本|本入)/g;
-    const unitMatches = [...designText.matchAll(unitRegex)].map(m => m[1]);
+    const unitMatches = [...text.matchAll(unitRegex)].map(m => m[1]);
     const uniqueUnits = [...new Set(unitMatches)];
     if (uniqueUnits.length <= 1) {
       result += `✅ 表記ゆれなし（${uniqueUnits[0] || "単位未検出"}）\n`;
