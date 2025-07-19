@@ -8,25 +8,46 @@ function runCheck() {
   const resultDiv = document.getElementById("result");
   let result = "";
 
-  // Aモード：価格チェック
+  // Aモード：価格チェック & 表記ゆれ
   if (modeA) {
-    const priceRegex = /(\d{2,5})円（税抜価格\s?(\d{2,5})円）/g;
-    const matches = [...designText.matchAll(priceRegex)];
-
     result += "🧾【価格チェック】\n";
+    const priceRegex = /(\d{2,5})円\s*\(\s*(税込価格|税抜価格|本体価格)?\s*([\d,]{2,5})円\s*\)/g;
+    const matches = [...designText.matchAll(priceRegex)];
     if (matches.length === 0) {
       result += "⚠ 価格形式が見つかりません\n";
     } else {
-      for (const [_, taxInStr, taxExStr] of matches) {
-        const taxIn = parseInt(taxInStr);
-        const taxEx = parseInt(taxExStr);
-        const calcIn = Math.round(taxEx * 1.08);
-        if (calcIn !== taxIn) {
-          result += `❌ ${taxEx}円 → 税込 ${calcIn}円のはず → 実際: ${taxIn}円\n`;
+      for (const [_, val1Str, label, val2Str] of matches) {
+        const num1 = parseInt(val1Str.replace(/,/g, ""));
+        const num2 = parseInt(val2Str.replace(/,/g, ""));
+        if (label?.includes("税抜")) {
+          const expected = Math.round(num2 * 1.1);
+          if (Math.abs(expected - num1) > 1) {
+            result += `❌ ${num2}円 → 税込は ${expected}円のはず → 実際: ${num1}円\n`;
+          } else {
+            result += `✅ ${num2}円 → ${num1}円（OK）\n`;
+          }
+        } else if (label?.includes("税込")) {
+          const expected = Math.round(num1 * 1.1);
+          if (Math.abs(expected - num2) > 1) {
+            result += `❌ ${num1}円 → 税込は ${expected}円のはず → 実際: ${num2}円\n`;
+          } else {
+            result += `✅ ${num1}円 → ${num2}円（OK）\n`;
+          }
         } else {
-          result += `✅ ${taxEx}円 → ${taxIn}円（OK）\n`;
+          result += `⚠ ${num1}円（${label || "不明"}）⇄ ${num2}円（確認必要）\n`;
         }
       }
+    }
+
+    // 単位表記チェック
+    result += "\n📦【数量・単位チェック】\n";
+    const unitRegex = /\d+(個|コ|ヶ|ケ|個入|枚|本|本入)/g;
+    const unitMatches = [...designText.matchAll(unitRegex)].map(m => m[1]);
+    const uniqueUnits = [...new Set(unitMatches)];
+    if (uniqueUnits.length <= 1) {
+      result += `✅ 表記ゆれなし（${uniqueUnits[0] || "単位未検出"}）\n`;
+    } else {
+      result += `⚠ 表記ゆれあり：「${uniqueUnits.join("」「")}」が混在しています\n`;
     }
     result += "\n";
   }
