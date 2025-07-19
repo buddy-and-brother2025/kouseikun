@@ -114,16 +114,25 @@ document.getElementById("sourceFile").addEventListener("change", async (e) => {
         await page.render({ canvasContext: ctx, viewport: viewport }).promise;
 
         if (useOCR) {
-          console.log("🧠 OCRモードで処理中"); // ← ★ここに追加！
-          const { data: { text } } = await Tesseract.recognize(canvas, 'jpn');
-          fullText += text + "\n";
-        } else {
-          const textContent = await page.getTextContent();
-          console.log("textContent の中身：", textContent); // ← ★追加
-          const strings = textContent.items.map((item) => item.str);
-          console.log("strings の中身：", strings); // ← ★追加
-          fullText += strings.join(" ") + "\n";
-        }
+  console.log("🧠 OCRモードで処理中");
+  const { data: { text } } = await Tesseract.recognize(canvas, 'jpn');
+  fullText += text + "\n";
+} else {
+  console.log("📄 テキスト抽出モードで処理中");
+
+  const textContent = await page.getTextContent();
+  console.log("textContent の中身：", textContent); // オブジェクト全体確認用
+
+  // ↓ 以下を追加
+  window._debugText = textContent;  // ← DevToolsで確認しやすく！
+  console.log("✅ textContent を window._debugText に保存しました");
+
+  const strings = textContent.items.map((item) => item.str);
+  console.log("strings の中身：", strings); // 実際の文字列配列
+
+  fullText += strings.join(" ") + "\n";
+}
+
       }
       document.getElementById("sourceText").value = fullText;
     };
