@@ -7,11 +7,14 @@ function checkPrices(text) {
   const results = [];
 
   const matches = [...text.matchAll(pricePattern)];
+  console.log("💡 マッチした価格情報:", matches); // ← 追加！
 
   matches.forEach((match) => {
+    console.log("📦 match内容:", match); // ← 各matchの詳細ログ
     const mainPrice = parseInt(match[1], 10);
     const taxType = match[2];
     const subPrice = parseInt(match[3], 10);
+
 
     if (taxType && subPrice) {
       const expected = taxType === "税込" ? Math.round(subPrice * 1.1) : Math.round(mainPrice / 1.1);
