@@ -1,5 +1,7 @@
 // script.js
-
+window.onload = function () {
+  console.log("✅ window.onload 発動 → JS動いてるよ！");
+};
 function runCheck() {
   const modeA = document.getElementById("modeA").checked;
   const modeB = document.getElementById("modeB").checked;
