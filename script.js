@@ -10,7 +10,7 @@ function runCheck() {
 
   // Aモード：価格チェック
   if (modeA) {
-    const priceRegex = /([1-9]\d{2,4})円（税抜価格([1-9]\d{2,4})円）/g;
+    const priceRegex = /(\d{2,5})円（税抜価格\s?(\d{2,5})円）/g;
     const matches = [...designText.matchAll(priceRegex)];
 
     result += "🧾【価格チェック】\n";
@@ -31,14 +31,14 @@ function runCheck() {
     result += "\n";
   }
 
-  // Bモード：テキスト差分
+  // Bモード：テキスト差分（単語/文単位で含まれているか）
   if (modeB) {
-    const srcLines = sourceText.split(/\r?\n/);
-    const desLines = designText.split(/\r?\n/);
+    const srcLines = sourceText.split(/\r?\n/).map(line => line.trim()).filter(line => line);
+    const desText = designText.replace(/\s+/g, " ");
     result += "📄【差分チェック】\n";
     srcLines.forEach((line, i) => {
-      if (line !== desLines[i]) {
-        result += `⚠ ${i + 1}行目：原稿「${line}」 ≠ デザイン「${desLines[i] || "（なし）"}」\n`;
+      if (!desText.includes(line)) {
+        result += `⚠ 原稿の文「${line}」がデザインに見つかりません\n`;
       }
     });
   }
@@ -69,23 +69,27 @@ document.getElementById("sourceFile").addEventListener("change", async (e) => {
     reader.onload = async function () {
       const typedarray = new Uint8Array(this.result);
       const pdf = await pdfjsLib.getDocument({ data: typedarray }).promise;
-      const page = await pdf.getPage(1);
 
-      const canvas = document.getElementById("hiddenCanvas");
-      const ctx = canvas.getContext("2d");
-      const viewport = page.getViewport({ scale: 2 });
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-      await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+      let fullText = "";
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const canvas = document.getElementById("hiddenCanvas");
+        const ctx = canvas.getContext("2d");
+        const viewport = page.getViewport({ scale: 2 });
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
 
-      if (useOCR) {
-        const { data: { text } } = await Tesseract.recognize(canvas, 'jpn');
-        document.getElementById("sourceText").value = text;
-      } else {
-        const textContent = await page.getTextContent();
-        const strings = textContent.items.map((item) => item.str);
-        document.getElementById("sourceText").value = strings.join("\n");
+        if (useOCR) {
+          const { data: { text } } = await Tesseract.recognize(canvas, 'jpn');
+          fullText += text + "\n";
+        } else {
+          const textContent = await page.getTextContent();
+          const strings = textContent.items.map((item) => item.str);
+          fullText += strings.join(" ") + "\n";
+        }
       }
+      document.getElementById("sourceText").value = fullText;
     };
     reader.readAsArrayBuffer(file);
   }
@@ -100,10 +104,15 @@ document.getElementById("designPDF").addEventListener("change", async (e) => {
   reader.onload = async function () {
     const typedarray = new Uint8Array(this.result);
     const pdf = await pdfjsLib.getDocument({ data: typedarray }).promise;
-    const page = await pdf.getPage(1);
-    const textContent = await page.getTextContent();
-    const strings = textContent.items.map((item) => item.str);
-    document.getElementById("designText").value = strings.join("\n");
+
+    let fullText = "";
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
+      const strings = textContent.items.map((item) => item.str);
+      fullText += strings.join(" ") + "\n";
+    }
+    document.getElementById("designText").value = fullText;
   };
   reader.readAsArrayBuffer(file);
 });
