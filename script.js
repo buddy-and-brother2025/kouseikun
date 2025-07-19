@@ -11,32 +11,49 @@ function runCheck() {
   // Aモード：価格チェック & 表記ゆれ
   if (modeA) {
     result += "🧾【価格チェック】\n";
-    const priceRegex = /(\d{2,5})円\s*\(\s*(税込価格|税抜価格|本体価格)?\s*([\d,]{2,5})円\s*\)/g;
-    const matches = [...designText.matchAll(priceRegex)];
-    if (matches.length === 0) {
-      result += "⚠ 価格形式が見つかりません\n";
-    } else {
-      for (const [_, val1Str, label, val2Str] of matches) {
-        const num1 = parseInt(val1Str.replace(/,/g, ""));
-        const num2 = parseInt(val2Str.replace(/,/g, ""));
-        if (label?.includes("税抜")) {
-          const expected = Math.round(num2 * 1.1);
-          if (Math.abs(expected - num1) > 1) {
-            result += `❌ ${num2}円 → 税込は ${expected}円のはず → 実際: ${num1}円\n`;
+
+    const lines = designText.split(/\r?\n/);
+    let matchCount = 0;
+
+    for (const line of lines) {
+      // 各種パターン対応（柔軟に）
+      const pattern = /([\d,]{2,5})円\s*[（(]?(税込価格|税抜価格|本体価格)?[：:\s]?([\d,]{2,5})円[）)]?/g;
+      const matches = [...line.matchAll(pattern)];
+
+      for (const match of matches) {
+        const val1 = parseInt(match[1].replace(/,/g, ""));
+        const label = match[2];
+        const val2 = parseInt(match[3].replace(/,/g, ""));
+        matchCount++;
+
+        if (!label) {
+          const big = Math.max(val1, val2);
+          const small = Math.min(val1, val2);
+          const expected = Math.round(small * 1.1);
+          const rel = Math.abs(big - expected) <= 1 ? "OK" : `❌ 誤差あり：${big}円 ≠ ${expected}円`;
+          result += `⚠ ラベルなし：${val1}円 ⇄ ${val2}円 → ${rel}\n`;
+        } else if (label.includes("税抜")) {
+          const expected = Math.round(val2 * 1.1);
+          if (Math.abs(val1 - expected) > 1) {
+            result += `❌ 税抜${val2}円 → 税込は ${expected}円のはず → 実際: ${val1}円\n`;
           } else {
-            result += `✅ ${num2}円 → ${num1}円（OK）\n`;
+            result += `✅ 税抜${val2}円 → 税込${val1}円（OK）\n`;
           }
-        } else if (label?.includes("税込")) {
-          const expected = Math.round(num1 * 1.1);
-          if (Math.abs(expected - num2) > 1) {
-            result += `❌ ${num1}円 → 税込は ${expected}円のはず → 実際: ${num2}円\n`;
+        } else if (label.includes("税込")) {
+          const expected = Math.round(val1 * 1.1);
+          if (Math.abs(val2 - expected) > 1) {
+            result += `❌ 税抜${val1}円 → 税込は ${expected}円のはず → 実際: ${val2}円\n`;
           } else {
-            result += `✅ ${num1}円 → ${num2}円（OK）\n`;
+            result += `✅ 税抜${val1}円 → 税込${val2}円（OK）\n`;
           }
         } else {
-          result += `⚠ ${num1}円（${label || "不明"}）⇄ ${num2}円（確認必要）\n`;
+          result += `⚠ ${label}：${val1}円 ⇄ ${val2}円 → ラベル判定できず\n`;
         }
       }
+    }
+
+    if (matchCount === 0) {
+      result += "⚠ 価格形式が見つかりません\n";
     }
 
     // 単位表記チェック
