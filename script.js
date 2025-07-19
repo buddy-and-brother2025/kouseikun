@@ -3,34 +3,22 @@ window.onload = function () {
   console.log("✅ window.onload 発動 → JS動いてるよ！");
 };
 function checkPrices(text) {
-  console.log("🧪 検査対象テキスト:\n", text);
-  const pricePattern = /(\d{2,5})円\s*[\(（]?(税込|税抜)?(?:価格)?\s*[:：]?\s*(\d{2,5})円[\)）]?/g;
   const results = [];
 
-  const matches = [...text.matchAll(pricePattern)];
-  console.log("💡 マッチした価格情報:", matches); // ← 追加！
+  const pattern = /（税抜価格\s*([\d,]+)円）\s*([\d,]+)\s*円/g;
+  let match;
+  while ((match = pattern.exec(text)) !== null) {
+    const taxExcluded = parseInt(match[1].replace(/,/g, ""));
+    const taxIncluded = parseInt(match[2].replace(/,/g, ""));
+    const expected = Math.round(taxExcluded * 1.1);
+    const diff = Math.abs(taxIncluded - expected);
 
-  matches.forEach((match) => {
-    console.log("📦 match内容:", match); // ← 各matchの詳細ログ
-    const mainPrice = parseInt(match[1], 10);
-    const taxType = match[2];
-    const subPrice = parseInt(match[3], 10);
-
-
-    if (taxType && subPrice) {
-      const expected = taxType === "税込" ? Math.round(subPrice * 1.1) : Math.round(mainPrice / 1.1);
-      const actual = taxType === "税込" ? mainPrice : subPrice;
-      const isValid = Math.abs(expected - actual) <= 1;
-
-      if (!isValid) {
-        results.push(`⚠ 計算不一致: ${mainPrice}円 ≠ ${taxType}価格 ${subPrice}円`);
-      } else {
-        results.push(`✅ OK: ${mainPrice}円 (${taxType}価格 ${subPrice}円)`);
-      }
+    if (diff <= 1) {
+      results.push(`✅ 税抜${taxExcluded}円 → 税込${taxIncluded}円（OK）`);
     } else {
-      results.push(`✅ 単体価格: ${mainPrice}円`);
+      results.push(`❌ 税抜${taxExcluded}円 → 税込のはずが ${expected}円 → 実際: ${taxIncluded}円`);
     }
-  });
+  }
 
   if (results.length === 0) {
     return "⚠ 価格形式が見つかりません";
@@ -38,6 +26,7 @@ function checkPrices(text) {
 
   return results.join("\n");
 }
+
 
 
 function runCheck() {
