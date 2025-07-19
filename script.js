@@ -118,6 +118,7 @@ document.getElementById("sourceFile").addEventListener("change", async (e) => {
           fullText += text + "\n";
         } else {
           const textContent = await page.getTextContent();
+          console.log("ページ内のテキストオブジェクト：", textContent);
           const strings = textContent.items.map((item) => item.str);
           fullText += strings.join(" ") + "\n";
         }
