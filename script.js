@@ -8,11 +8,8 @@ function runCheck() {
   const resultDiv = document.getElementById("result");
   let result = "";
 
-  // Aモード：価格チェック & 表記ゆれ
   if (modeA) {
     result += "🧾【価格チェック】\n";
-
-    // 全文からマッチ（行単位ではなく）
     const text = designText.replace(/\s+/g, " ");
     const pattern = /([\d,]{2,5})円\s*[（(]?(税込価格|税抜価格|本体価格)?[：:\s]?([\d,]{2,5})円[）)]?/g;
     const matches = [...text.matchAll(pattern)];
@@ -51,7 +48,6 @@ function runCheck() {
       }
     }
 
-    // 単位表記チェック
     result += "\n📦【数量・単位チェック】\n";
     const unitRegex = /\d+(個|コ|ヶ|ケ|個入|枚|本|本入)/g;
     const unitMatches = [...text.matchAll(unitRegex)].map(m => m[1]);
@@ -64,7 +60,6 @@ function runCheck() {
     result += "\n";
   }
 
-  // Bモード：テキスト差分（単語/文単位で含まれているか）
   if (modeB) {
     const srcLines = sourceText.split(/\r?\n/).map(line => line.trim()).filter(line => line);
     const desText = designText.replace(/\s+/g, " ");
@@ -79,7 +74,6 @@ function runCheck() {
   resultDiv.innerText = result || "✅ 問題なし！";
 }
 
-// 原稿ファイル読み込み（PDFまたはExcel）
 document.getElementById("sourceFile").addEventListener("change", async (e) => {
   const file = e.target.files[0];
   const mode = document.querySelector("input[name='sourceMode']:checked").value;
@@ -101,13 +95,19 @@ document.getElementById("sourceFile").addEventListener("change", async (e) => {
     const reader = new FileReader();
     reader.onload = async function () {
       const typedarray = new Uint8Array(this.result);
-      const pdf = await pdfjsLib.getDocument({ data: typedarray }).promise;
+      const loadingTask = pdfjsLib.getDocument({
+        data: typedarray,
+        cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/cmaps/',
+        cMapPacked: true,
+        useWorkerFetch: true
+      });
 
+      const pdf = await loadingTask.promise;
       let fullText = "";
       for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
         const canvas = document.getElementById("hiddenCanvas");
-        const ctx = canvas.getContext("2d");
+        const ctx = canvas.getContext("2d", { willReadFrequently: true });
         const viewport = page.getViewport({ scale: 2 });
         canvas.width = viewport.width;
         canvas.height = viewport.height;
@@ -128,7 +128,6 @@ document.getElementById("sourceFile").addEventListener("change", async (e) => {
   }
 });
 
-// 完成デザインPDF読み込み
 document.getElementById("designPDF").addEventListener("change", async (e) => {
   const file = e.target.files[0];
   if (!file) return;
@@ -136,7 +135,13 @@ document.getElementById("designPDF").addEventListener("change", async (e) => {
   const reader = new FileReader();
   reader.onload = async function () {
     const typedarray = new Uint8Array(this.result);
-    const pdf = await pdfjsLib.getDocument({ data: typedarray }).promise;
+    const loadingTask = pdfjsLib.getDocument({
+      data: typedarray,
+      cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/cmaps/',
+      cMapPacked: true,
+      useWorkerFetch: true
+    });
+    const pdf = await loadingTask.promise;
 
     let fullText = "";
     for (let i = 1; i <= pdf.numPages; i++) {
