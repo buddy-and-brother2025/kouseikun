@@ -2,6 +2,40 @@
 window.onload = function () {
   console.log("✅ window.onload 発動 → JS動いてるよ！");
 };
+function checkPrices(text) {
+  const pricePattern = /(\d{2,5})円\s*(?:（?\s*(税込|税抜)?\s*価格?\s*(\d{2,5})円?）?)?/g;
+  const results = [];
+
+  const matches = [...text.matchAll(pricePattern)];
+
+  matches.forEach((match) => {
+    const mainPrice = parseInt(match[1], 10);
+    const taxType = match[2];
+    const subPrice = parseInt(match[3], 10);
+
+    if (taxType && subPrice) {
+      const expected = taxType === "税込" ? Math.round(subPrice * 1.1) : Math.round(mainPrice / 1.1);
+      const actual = taxType === "税込" ? mainPrice : subPrice;
+      const isValid = Math.abs(expected - actual) <= 1;
+
+      if (!isValid) {
+        results.push(`⚠ 計算不一致: ${mainPrice}円 ≠ ${taxType}価格 ${subPrice}円`);
+      } else {
+        results.push(`✅ OK: ${mainPrice}円 (${taxType}価格 ${subPrice}円)`);
+      }
+    } else {
+      results.push(`✅ 単体価格: ${mainPrice}円`);
+    }
+  });
+
+  if (results.length === 0) {
+    return "⚠ 価格形式が見つかりません";
+  }
+
+  return results.join("\n");
+}
+
+
 function runCheck() {
   const modeA = document.getElementById("modeA").checked;
   const modeB = document.getElementById("modeB").checked;
@@ -11,44 +45,8 @@ function runCheck() {
   let result = "";
 
   if (modeA) {
-    result += "🧾【価格チェック】\n";
     const text = designText.replace(/\s+/g, " ");
-    const pattern = /([\d,]{2,5})円\s*[（(]?(税込価格|税抜価格|本体価格)?[：:\s]?([\d,]{2,5})円[）)]?/g;
-    const matches = [...text.matchAll(pattern)];
-
-    if (matches.length === 0) {
-      result += "⚠ 価格形式が見つかりません\n";
-    } else {
-      for (const match of matches) {
-        const val1 = parseInt(match[1].replace(/,/g, ""));
-        const label = match[2];
-        const val2 = parseInt(match[3].replace(/,/g, ""));
-
-        if (!label) {
-          const big = Math.max(val1, val2);
-          const small = Math.min(val1, val2);
-          const expected = Math.round(small * 1.1);
-          const rel = Math.abs(big - expected) <= 1 ? "OK" : `❌ 誤差あり：${big}円 ≠ ${expected}円`;
-          result += `⚠ ラベルなし：${val1}円 ⇄ ${val2}円 → ${rel}\n`;
-        } else if (label.includes("税抜")) {
-          const expected = Math.round(val2 * 1.1);
-          if (Math.abs(val1 - expected) > 1) {
-            result += `❌ 税抜${val2}円 → 税込は ${expected}円のはず → 実際: ${val1}円\n`;
-          } else {
-            result += `✅ 税抜${val2}円 → 税込${val1}円（OK）\n`;
-          }
-        } else if (label.includes("税込")) {
-          const expected = Math.round(val1 * 1.1);
-          if (Math.abs(val2 - expected) > 1) {
-            result += `❌ 税抜${val1}円 → 税込は ${expected}円のはず → 実際: ${val2}円\n`;
-          } else {
-            result += `✅ 税抜${val1}円 → 税込${val2}円（OK）\n`;
-          }
-        } else {
-          result += `⚠ ${label}：${val1}円 ⇄ ${val2}円 → ラベル判定できず\n`;
-        }
-      }
-    }
+    result += checkPrices(text) + "\n";
 
     result += "\n📦【数量・単位チェック】\n";
     const unitRegex = /\d+(個|コ|ヶ|ケ|個入|枚|本|本入)/g;
