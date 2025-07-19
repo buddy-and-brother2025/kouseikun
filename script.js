@@ -114,6 +114,7 @@ document.getElementById("sourceFile").addEventListener("change", async (e) => {
         await page.render({ canvasContext: ctx, viewport: viewport }).promise;
 
         if (useOCR) {
+          console.log("🧠 OCRモードで処理中"); // ← ★ここに追加！
           const { data: { text } } = await Tesseract.recognize(canvas, 'jpn');
           fullText += text + "\n";
         } else {
