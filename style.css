@@ -216,6 +216,7 @@ mark {
   font-size: 2.6rem;
   font-weight: 900;
   color: #0ABAB5;
+  letter-spacing: 0.6em;
   margin-bottom: 0.2rem;
   display: block; /* ✅ blockにして一行占有 */
 }
