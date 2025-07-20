@@ -216,6 +216,7 @@ mark {
   font-weight: 900;
   margin-bottom: 0.3rem;
   line-height: 1.2;
+  display: inline-block;
 }
 
 /* サブタイトル小さめ＆おしゃれに文字間調整 */
