@@ -74,6 +74,49 @@ button:hover {
   overflow-y: auto;
 }
 
+.result-section {
+  margin: 1em 0;
+  font-size: 0.95em;
+  line-height: 1.6;
+}
+
+.result-item {
+  padding: 0.6em;
+  border-radius: 5px;
+  margin-bottom: 0.5em;
+}
+
+.result-item.success {
+  background-color: #e6ffed;
+  border-left: 4px solid #00aa55;
+}
+
+.result-item.error {
+  background-color: #fff2f2;
+  border-left: 4px solid #e50000;
+}
+
+.line {
+  font-weight: bold;
+}
+
+.detail {
+  margin-top: 0.2em;
+  padding-left: 1.5em;
+  color: #555;
+}
+
+.miss {
+  background-color: #ffd5d5;
+  padding: 0 4px;
+  border-radius: 3px;
+  font-weight: bold;
+}
+
+.source {
+  font-family: 'Menlo', 'Consolas', monospace;
+}
+
 canvas {
   display: none;
 }

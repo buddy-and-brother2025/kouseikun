@@ -53,6 +53,20 @@
     <textarea id="designText" rows="8" placeholder="完成デザインのテキストがここに表示されます"></textarea>
   </div>
 
+  <div class="result-section">
+  <h3>📄 差分チェック</h3>
+
+  <div class="result-item error">
+    <div class="line">❌ <span class="source">「スタミナ弁当,牛肉とシャキシャキ野菜...,650円」</span></div>
+    <div class="detail">↪ 見つからなかった語句: <span class="miss">スタミナ弁当</span> / <span class="miss">650円</span></div>
+  </div>
+
+  <div class="result-item success">
+    <div class="line">✅ <span class="source">「大宮店」</span> は全語句が含まれています</div>
+  </div>
+</div>
+
+
   <button onclick="runCheck()">チェックする</button>
   <div id="result" class="result"></div>
 
