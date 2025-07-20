@@ -126,7 +126,32 @@ function runCheck() {
   }
 
   resultDiv.innerHTML = result || "<div class='result-ok'>✅ 問題なし！</div>";
+  highlightWords();
 }
+
+function highlightWords() {
+  const designText = document.getElementById("designText").value;
+  const sourceText = document.getElementById("sourceText").value;
+  const previewBox = document.getElementById("designPreview");
+  const des = designText.replace(/\s+/g, "");
+  let highlighted = des;
+
+  const words = sourceText
+    .split(/[\s,、。！!（）()・「」『』\r\n]/)
+    .map(w => w.trim())
+    .filter(w => w.length > 1); // 1文字はスキップ
+
+  const uniqueWords = [...new Set(words)];
+
+  uniqueWords.forEach(word => {
+    const safeWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // 正規表現用にエスケープ
+    const regex = new RegExp(safeWord, "g");
+    highlighted = highlighted.replace(regex, `<mark>${word}</mark>`);
+  });
+
+  previewBox.innerHTML = highlighted;
+}
+
 
 // PDF／Excel処理：元のまま（省略なし）
 document.getElementById("sourceFile").addEventListener("change", async (e) => {

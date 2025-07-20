@@ -147,3 +147,20 @@ canvas {
   margin-top: 1.2rem;
   margin-bottom: 1.2rem;
 }
+
+.preview-box {
+  background: #fefefe;
+  padding: 1em;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  line-height: 1.6;
+  font-size: 1rem;
+  white-space: pre-wrap;
+}
+
+mark {
+  background-color: #0ABAB5;
+  color: white;
+  padding: 0 3px;
+  border-radius: 3px;
+}
