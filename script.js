@@ -148,7 +148,8 @@ document.getElementById("sourceFile").addEventListener("change", async (e) => {
         } else {
           const textContent = await page.getTextContent();
           const strings = textContent.items.map((item) => item.str);
-          fullText += strings.join(" ") + "\n";
+          const mergedText = mergeNearbyWords(strings); // ← ここで連結処理
+          fullText += mergedText + "\n";
         }
       }
       document.getElementById("sourceText").value = fullText;
