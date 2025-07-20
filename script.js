@@ -31,6 +31,7 @@ function checkPrices(text) {
 function runCheck() {
   const modeA = document.getElementById("modeA").checked;
   const modeB = document.getElementById("modeB").checked;
+  const matchMode = document.querySelector('input[name="matchMode"]:checked')?.value || "strict";
   const sourceText = document.getElementById("sourceText").value;
   const designText = document.getElementById("designText").value;
   const resultDiv = document.getElementById("result");
