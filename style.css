@@ -164,3 +164,19 @@ mark {
   padding: 0 3px;
   border-radius: 3px;
 }
+
+.two-column {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.two-column .half {
+  flex: 1 1 48%;
+  display: flex;
+  flex-direction: column;
+}
+
+.two-column textarea {
+  height: 200px;
+}
