@@ -214,17 +214,16 @@ mark {
 .main-title {
   font-size: 2.6rem;
   font-weight: 900;
-  margin-bottom: 0.3rem;
-  line-height: 1.2;
-  display: inline-block;
+  margin-bottom: 0.2rem;
+  display: block; /* ✅ blockにして一行占有 */
 }
 
 /* サブタイトル小さめ＆おしゃれに文字間調整 */
 .sub-title {
   font-size: 1rem;
   font-weight: 400;
-  letter-spacing: 0.4em; /* 文字間広げて幅合わせ */
-  display: inline-block;
+  letter-spacing: 0.4em;
+  display: block; /* ✅ 同じく blockに */
 }
 
 /* ▍付き見出しスタイル */
