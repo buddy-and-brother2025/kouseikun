@@ -184,6 +184,7 @@ function runCheck() {
     if (!file) return;
 
     const reader = new FileReader();
+
     reader.onload = async function () {
       const typedarray = new Uint8Array(this.result);
       const loadingTask = pdfjsLib.getDocument({
@@ -204,7 +205,4 @@ function runCheck() {
       document.getElementById("designText").value = fullText;
     };
     reader.readAsArrayBuffer(file);
-
-    <button onclick="location.reload()">クリア</button>
-
   });
