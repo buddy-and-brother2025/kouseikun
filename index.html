@@ -22,57 +22,49 @@
 </head>
 
 <body>
-  <h1>📘 コウセイくん | 簡易校正ツール</h1>
+  <h1 class="main-title"><span class="accent-bar">▍</span>コウセイくん | 簡易校正ツール</h1>
 
   <div class="section">
-    <label>モード選択：</label>
+    <label class="section-title"><span class="accent-bar">▍</span>モード選択：</label>
     <label><input type="checkbox" id="modeA" checked /> A：売価・数量チェック</label>
     <label><input type="checkbox" id="modeB" checked /> B：テキスト差分チェック</label>
   </div>
 
   <!-- 厳密／ゆるめ モード切り替え -->
-  <div style="margin-top: 1em;">
-    <label><input type="radio" name="matchMode" value="strict" checked> 🔍 厳密モード</label>
-    <label><input type="radio" name="matchMode" value="loose"> 🎈 ゆるめモード</label>
-    <p style="font-size: 0.9em; color: gray; margin-left: 1em;">
-      ※ゆるめモードは空白や改行の差を無視して比較します
-    </p>
+  <div class="section mode-toggle">
+    <label class="section-title"><span class="accent-bar">▍</span>厳密モード／ゆるめモード：</label>
+    <div class="radio-inline">
+      <label><input type="radio" name="matchMode" value="strict" checked> 🔍 厳密モード</label>
+      <label><input type="radio" name="matchMode" value="loose"> 🎈 ゆるめモード</label>
+    </div>
+    <p class="mode-note">※ゆるめモードは空白や改行の差を無視して比較します</p>
   </div>
 
+
   <!-- ▼ 1. 形式・OCRの選択をファイル選択の前に移動 -->
-  <div class="form-group">
-    <label>原稿の形式を選択：</label>
+  <div class="section">
+    <label class="section-title"><span class="accent-bar">▍</span>原稿の形式を選択：</label>
     <label><input type="radio" name="sourceMode" value="pdf" checked> PDF</label>
     <label><input type="radio" name="sourceMode" value="excel"> Excel</label>
     <label><input type="checkbox" id="useOCR"> OCRを使う（PDFのみ）</label>
   </div>
 
   <!-- ▼ 2. ファイルアップロード（その下に） -->
-  <div class="form-group">
-    <label for="sourceFile">原稿データ選択：</label>
+  <div class="section">
+    <label class="section-title"><span class="accent-bar">▍</span>原稿データを選択：</label>
     <input type="file" id="sourceFile">
   </div>
 
   <div class="section">
-    <label>完成デザイン（PDF）を選択：</label>
+    <label class="section-title"><span class="accent-bar">▍</span>完成デザイン（PDF）を選択：</label>
     <input type="file" id="designPDF" accept=".pdf" />
   </div>
 
- <!-- ▍原稿＆デザインテキスト 横並び表示 -->
-<div class="section two-column">
-  <div class="half">
-    <label class="section-title"><span class="accent-bar">▍</span>原稿テキスト</label>
-    <textarea id="sourceText" rows="8" placeholder="原稿のテキストがここに表示されます"></textarea>
-  </div>
-  <div class="half">
-    <label class="section-title"><span class="accent-bar">▍</span>完成デザインテキスト</label>
-    <textarea id="designText" rows="8" placeholder="完成デザインのテキストがここに表示されます"></textarea>
-  </div>
-</div>
+
 
   <div class="section">
-    <label>デザイン内に含まれる原稿ワードの可視化</label>
-    <div id="designPreview" class="preview-box"></div>
+    <label class="section-title"><span class="accent-bar">▍</span>デザイン内に含まれる原稿ワードの可視化：</label>
+    <div id="highlightedDisplay" class="highlighted-box"></div>
   </div>
 
 
