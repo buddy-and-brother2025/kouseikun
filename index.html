@@ -39,12 +39,18 @@
     </p>
   </div>
 
-  <div class="section">
-    <label>原稿データを選択：</label>
-    <input type="file" id="sourceFile" accept=".pdf,.xlsx" />
-    <label><input type="radio" name="sourceMode" value="pdf" checked /> PDF</label>
-    <label><input type="radio" name="sourceMode" value="excel" /> Excel</label>
-    <label><input type="checkbox" id="useOCR" /> OCRを使う（PDFが画像の場合）</label>
+  <!-- ▼ 1. 形式・OCRの選択をファイル選択の前に移動 -->
+  <div class="form-group">
+    <label>原稿の形式を選択：</label><br>
+    <label><input type="radio" name="sourceMode" value="pdf" checked> PDF</label>
+    <label><input type="radio" name="sourceMode" value="excel"> Excel</label>
+    <label><input type="checkbox" id="useOCR"> OCRを使う（PDFのみ）</label>
+  </div>
+
+  <!-- ▼ 2. ファイルアップロード（その下に） -->
+  <div class="form-group">
+    <label for="sourceFile">原稿データ選択：</label>
+    <input type="file" id="sourceFile">
   </div>
 
   <div class="section">
@@ -75,8 +81,12 @@
     </div>
   </div>
 
+  <!-- ▼ 3. 「チェック」ボタンの隣に「クリア」ボタン追加 -->
+  <div class="form-group">
+    <button onclick="runCheck()">チェックする</button>
+    <button onclick="clearAll()">クリア</button>
+  </div>
 
-  <button onclick="runCheck()">チェックする</button>
   <div id="result" class="result"></div>
 
   <canvas id="hiddenCanvas" style="display:none;"></canvas>
