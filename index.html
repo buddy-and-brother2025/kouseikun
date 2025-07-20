@@ -8,16 +8,16 @@
   <link rel="stylesheet" href="style.css">
   <!-- ライブラリ読み込み -->
   <!-- ✅ PDF.js 本体と Worker を 3.4.120 に統一 -->
-   <link rel="icon" href="favicon.png" type="image/png">
-<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/build/pdf.min.js"></script>
-<script>
-  pdfjsLib = window['pdfjs-dist/build/pdf'];
-  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/build/pdf.worker.min.js';
-</script>
+  <link rel="icon" href="favicon.png" type="image/png">
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/build/pdf.min.js"></script>
+  <script>
+    pdfjsLib = window['pdfjs-dist/build/pdf'];
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/build/pdf.worker.min.js';
+  </script>
 
-<!-- ✅ Excel & OCR -->
-<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.1/dist/tesseract.min.js"></script>
+  <!-- ✅ Excel & OCR -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.1/dist/tesseract.min.js"></script>
 
 </head>
 
@@ -28,6 +28,15 @@
     <label>モード選択：</label>
     <label><input type="checkbox" id="modeA" checked /> A：売価・数量チェック</label>
     <label><input type="checkbox" id="modeB" checked /> B：テキスト差分チェック</label>
+  </div>
+
+  <!-- 厳密／ゆるめ モード切り替え -->
+  <div style="margin-top: 1em;">
+    <label><input type="radio" name="matchMode" value="strict" checked> 🔍 厳密モード</label>
+    <label><input type="radio" name="matchMode" value="loose"> 🎈 ゆるめモード</label>
+    <p style="font-size: 0.9em; color: gray; margin-left: 1em;">
+      ※ゆるめモードは空白や改行の差を無視して比較します
+    </p>
   </div>
 
   <div class="section">
@@ -54,17 +63,17 @@
   </div>
 
   <div class="result-section">
-  <h3>📄 差分チェック</h3>
+    <h3>📄 差分チェック</h3>
 
-  <div class="result-item error">
-    <div class="line">❌ <span class="source">「スタミナ弁当,牛肉とシャキシャキ野菜...,650円」</span></div>
-    <div class="detail">↪ 見つからなかった語句: <span class="miss">スタミナ弁当</span> / <span class="miss">650円</span></div>
-  </div>
+    <div class="result-item error">
+      <div class="line">❌ <span class="source">「スタミナ弁当,牛肉とシャキシャキ野菜...,650円」</span></div>
+      <div class="detail">↪ 見つからなかった語句: <span class="miss">スタミナ弁当</span> / <span class="miss">650円</span></div>
+    </div>
 
-  <div class="result-item success">
-    <div class="line">✅ <span class="source">「大宮店」</span> は全語句が含まれています</div>
+    <div class="result-item success">
+      <div class="line">✅ <span class="source">「大宮店」</span> は全語句が含まれています</div>
+    </div>
   </div>
-</div>
 
 
   <button onclick="runCheck()">チェックする</button>

@@ -67,7 +67,16 @@ function runCheck() {
         .map(w => w.trim())
         .filter(w => w);
 
-      const missingWords = words.filter(word => !desText.includes(word));
+      const missingWords = words.filter(word => {
+        if (matchMode === "strict") {
+          return !desText.includes(word);
+        } else {
+          // ゆるめモード：空白を無視して比較
+          const looseWord = word.replace(/\s+/g, "");
+          const looseText = desText.replace(/\s+/g, "");
+          return !looseText.includes(looseWord);
+        }
+      });
 
       if (missingWords.length > 0) {
         const missList = missingWords.map(w => `<span class="miss">${w}</span>`).join(" / ");
