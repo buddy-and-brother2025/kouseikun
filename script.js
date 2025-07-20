@@ -1,3 +1,7 @@
+function runCheck() {
+  console.log("✅ runCheck 発動！");
+  // あとに続く処理
+}
 // script.js
 window.onload = function () {
   console.log("✅ window.onload 発動 → JS動いてるよ！");
