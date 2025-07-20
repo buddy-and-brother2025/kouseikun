@@ -255,3 +255,7 @@ mark {
   white-space: pre-wrap;
   line-height: 1.6;
 }
+
+.section:not(:first-child) {
+  margin-top: 2.5rem;
+}
