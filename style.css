@@ -213,10 +213,10 @@ mark {
 
 /* タイトル大きめ */
 .main-title {
-  font-size: 2.6rem;
+  font-size: 2.5rem;
   font-weight: 900;
   color: #0ABAB5;
-  letter-spacing: 0.6em;
+  letter-spacing: 0.3em;
   margin-bottom: 0.2rem;
   display: block; /* ✅ blockにして一行占有 */
 }
