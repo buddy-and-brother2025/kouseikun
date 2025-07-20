@@ -42,46 +42,45 @@
 
 
   <!-- ▍原稿の形式を選択（＋データアップロード） -->
-<div class="section">
-  <label class="section-title"><span class="accent-bar">▍</span> 原稿の形式を選択：</label>
-
-  <div class="radio-inline">
-    <label><input type="radio" name="sourceMode" value="pdf" checked> PDF</label>
-    <label><input type="radio" name="sourceMode" value="excel"> Excel</label>
-    <label><input type="checkbox" id="useOCR"> OCRを使う（PDFのみ）</label>
-  </div>
-
-  <div class="form-group" style="margin-top: 1rem;">
-    <label for="sourceFile">原稿データを選択：</label>
-    <input type="file" id="sourceFile">
-  </div>
-</div>
-
-<!-- ▍完成デザインPDF -->
-<div class="section">
-  <label class="section-title"><span class="accent-bar">▍</span> 完成デザイン（PDF）を選択：</label>
-  <input type="file" id="designPDF" accept=".pdf" />
-</div>
-
-<!-- 原稿／完成デザインテキストを横並び -->
-<div class="two-column">
-  <div class="half">
-    <label class="section-title"><span class="accent-bar">▍</span> 原稿テキスト</label>
-    <textarea id="sourceText" rows="10" placeholder="原稿のテキストがここに表示されます"></textarea>
-  </div>
-
-  <div class="half">
-    <label class="section-title"><span class="accent-bar">▍</span> 完成デザインテキスト</label>
-    <textarea id="designText" rows="10" placeholder="完成デザインのテキストがここに表示されます"></textarea>
-  </div>
-</div>
-
-
-
   <div class="section">
-    <label class="section-title"><span class="accent-bar">▍</span>デザイン内に含まれる原稿ワードの可視化：</label>
-    <div id="highlightedDisplay" class="highlighted-box"></div>
+    <label class="section-title"><span class="accent-bar">▍</span> 原稿の形式を選択：</label>
+
+    <div class="radio-inline">
+      <label><input type="radio" name="sourceMode" value="pdf" checked> PDF</label>
+      <label><input type="radio" name="sourceMode" value="excel"> Excel</label>
+      <label><input type="checkbox" id="useOCR"> OCRを使う（PDFのみ）</label>
+    </div>
+
+    <div class="form-group" style="margin-top: 1rem;">
+      <label for="sourceFile">原稿データを選択：</label>
+      <input type="file" id="sourceFile">
+    </div>
   </div>
+
+  <!-- ▍完成デザインPDF -->
+  <div class="section">
+    <label class="section-title"><span class="accent-bar">▍</span> 完成デザイン（PDF）を選択：</label>
+    <input type="file" id="designPDF" accept=".pdf" />
+  </div>
+
+  <!-- 原稿／完成デザインテキストを横並び -->
+  <div class="two-column">
+    <div class="half">
+      <label class="section-title"><span class="accent-bar">▍</span> 原稿テキスト</label>
+      <textarea id="sourceText" rows="10" placeholder="原稿のテキストがここに表示されます"></textarea>
+    </div>
+
+    <div class="half">
+      <label class="section-title"><span class="accent-bar">▍</span> 完成デザインテキスト</label>
+      <textarea id="designText" rows="10" placeholder="完成デザインのテキストがここに表示されます"></textarea>
+    </div>
+  </div>
+
+  <div class="section" style="margin-top: 2rem;">
+    <label class="section-title"><span class="accent-bar">▍</span> デザイン内に含まれる原稿ワードの可視化：</label>
+    <div id="designPreview" class="highlighted-box"></div>
+  </div>
+
 
 
   <div class="result-section"></div>
