@@ -204,4 +204,8 @@ function runCheck() {
       document.getElementById("designText").value = fullText;
     };
     reader.readAsArrayBuffer(file);
-  });
+
+    document.getElementById("clearBtn").addEventListener("click", () => {
+      location.reload();
+
+    });
