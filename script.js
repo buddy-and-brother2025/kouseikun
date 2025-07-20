@@ -205,7 +205,6 @@ function runCheck() {
     };
     reader.readAsArrayBuffer(file);
 
-    document.getElementById("clearBtn").addEventListener("click", () => {
-      location.reload();
+    <button onclick="location.reload()">クリア</button>
 
-    });
+  });
