@@ -204,7 +204,7 @@ mark {
 /* メインヘッダー帯 */
 .main-header {
   background-color: #0ABAB5;
-  padding: 2rem 1rem;
+  padding: 2.5rem 1rem;
   text-align: center;
   color: #fff;
   margin-bottom: 2rem;
@@ -212,19 +212,18 @@ mark {
 
 /* タイトル大きめ */
 .main-title {
-  font-size: 2.4rem;
+  font-size: 2.6rem;
   font-weight: 900;
   margin-bottom: 0.3rem;
-  display: inline-block;
+  line-height: 1.2;
 }
 
 /* サブタイトル小さめ＆おしゃれに文字間調整 */
 .sub-title {
   font-size: 1rem;
-  letter-spacing: 0.5em;
   font-weight: 400;
+  letter-spacing: 0.4em; /* 文字間広げて幅合わせ */
   display: inline-block;
-  width: calc(1ch * 6); /* 仮：コウセイくんが6文字分として幅を合わせる */
 }
 
 /* ▍付き見出しスタイル */
