@@ -43,22 +43,23 @@
 
   <!-- ▼ 1. 形式・OCRの選択をファイル選択の前に移動 -->
   <div class="section">
-    <label class="section-title"><span class="accent-bar">▍</span>原稿の形式を選択：</label>
+     <label class="section-title"><span class="accent-bar">▍</span>原稿の形式を選択：</label>
 
-    <label><input type="radio" name="sourceMode" value="pdf" checked> PDF</label>
-    <label><input type="radio" name="sourceMode" value="excel"> Excel</label>
-    <label><input type="checkbox" id="useOCR"> OCRを使う（PDFのみ）</label>
-  </div>
+    <div class="radio-inline"></div>
+     <label><input type="radio" name="sourceMode" value="pdf" checked> PDF</label>
+     <label><input type="radio" name="sourceMode" value="excel"> Excel</label>
+     <label><input type="checkbox" id="useOCR"> OCRを使う（PDFのみ）</label>
+    </div>
 
-  <div class="form-group" style="margin-top: 1rem;">
-    <label for="sourceFile">原稿データを選択：</label>
-    <input type="file" id="sourceFile">
-  </div>
+    <div class="form-group" style="margin-top: 1rem;">
+     <label for="sourceFile">原稿データを選択：</label>
+     <input type="file" id="sourceFile">
+    </div>
 
-  <div class="section">
-    <label class="section-title"><span class="accent-bar">▍</span>完成デザイン（PDF）を選択：</label>
-    <input type="file" id="designPDF" accept=".pdf" />
-  </div>
+    <div class="section">
+     <label class="section-title"><span class="accent-bar">▍</span>完成デザイン（PDF）を選択：</label>
+     <input type="file" id="designPDF" accept=".pdf" />
+    </div>
   </div>
 
   <div class="two-column">
