@@ -203,10 +203,11 @@ mark {
 
 /* メインヘッダー帯 */
 .main-header {
-  background-color: #0ABAB5;
-  padding: 2.5rem 1rem;
+ border: 3px solid #0ABAB5;
+  border-radius: 8px;
+  padding: 1.5rem 1rem;
+  background-color: #fff;
   text-align: center;
-  color: #fff;
   margin-bottom: 2rem;
 }
 
@@ -214,15 +215,17 @@ mark {
 .main-title {
   font-size: 2.6rem;
   font-weight: 900;
+  color: #0ABAB5;
   margin-bottom: 0.2rem;
   display: block; /* ✅ blockにして一行占有 */
 }
 
 /* サブタイトル小さめ＆おしゃれに文字間調整 */
 .sub-title {
-  font-size: 1rem;
+  font-size: 1.3rem;
   font-weight: 400;
-  letter-spacing: 0.4em;
+  color: #0ABAB5;
+  letter-spacing: 0.6em;
   display: block; /* ✅ 同じく blockに */
 }
 
